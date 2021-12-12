@@ -2,3 +2,5 @@
 *.pyc
 __pycache__
 notes.md
+.idea
+*.sqlite3
