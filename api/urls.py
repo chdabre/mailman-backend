@@ -5,11 +5,11 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 urlpatterns = [
-   path('rest-auth/', include('rest_auth.urls')),
-   path('rest-auth/registration/', include('rest_auth.registration.urls')),
+   path('auth/', include('rest_auth.urls')),
+   path('auth/registration/', include('rest_auth.registration.urls')),
    path('users/', include('users.urls')),
-   path('credentials/', include('postcard_creator.urls')),
-   path('jobs/', include('jobs.urls')),
+   path('', include('postcards.urls')),
+   path('', include('jobs.urls')),
 ]
 
 # Swagger / drf-yasg configuration

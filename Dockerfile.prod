@@ -1,8 +1,19 @@
 # pull official base image
 FROM python:3.9.6-slim
 
-# set work directory
-WORKDIR /usr/src/app
+# create directory for the app user
+RUN mkdir -p /home/app
+
+# create the app user
+RUN addgroup --system app && adduser --group app --system
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/mediafiles
+WORKDIR $APP_HOME
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -39,16 +50,23 @@ RUN /bin/sh -c 'set -ex && \
 RUN pip install micropipenv[toml]
 
 # install dependencies
-COPY ./Pipfile /usr/src/app/Pipfile
-COPY ./Pipfile.lock /usr/src/app/Pipfile.lock
+COPY ./Pipfile $APP_HOME/Pipfile
+COPY ./Pipfile.lock $APP_HOME/Pipfile.lock
 RUN micropipenv install --deploy
 
-
 # copy entrypoint.sh
-COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+COPY ./entrypoint.prod.sh .
+RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
+RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
 # copy project
-COPY . /usr/src/app/
+COPY . $APP_HOME
 
-# run entrypoint.sh
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# change to the app user
+USER app
+
+# run entrypoint.prod.sh
+ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]

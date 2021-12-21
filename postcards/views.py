@@ -1,7 +1,8 @@
 from rest_framework import viewsets, mixins
 
-from postcard_creator.models import PostcardCreatorCredentials
-from postcard_creator.serializers import PostcardCreatorCredentialsSerializer
+from postcards.models import PostcardCreatorCredentials
+from postcards.serializers import PostcardCreatorCredentialsSerializer
+from postcards.tasks import import_user_address
 
 
 class PostcardCreatorCredentialsViewSet(
@@ -16,3 +17,7 @@ class PostcardCreatorCredentialsViewSet(
 
     def filter_queryset(self, queryset):
         return queryset.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        credentials = serializer.save(user=self.request.user)
+        import_user_address(credentials)

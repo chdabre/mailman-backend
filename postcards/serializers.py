@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from postcard_creator.models import PostcardCreatorCredentials
+from postcards.models import PostcardCreatorCredentials
 
 
 class PostcardCreatorCredentialsSerializer(serializers.ModelSerializer):
