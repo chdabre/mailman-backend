@@ -42,7 +42,7 @@ def send_postcard(job):
     postcard_creator = PostcardCreator(credentials.get_token())
     postcard_creator.send_free_card(
         postcard=job.to_postcard(),
-        mock_send=True, #settings.DEBUG,
+        mock_send=settings.DEBUG,
         image_export=True
     )
 
