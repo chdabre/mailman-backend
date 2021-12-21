@@ -19,6 +19,7 @@ services:
   celery:
     build:
       context: ./
+      dockerfile: Dockerfile.prod
     command: celery --app=config worker --loglevel=info -B
     volumes:
       - ./:/home/app
