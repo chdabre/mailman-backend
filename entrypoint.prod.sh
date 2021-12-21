@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo "START PRODUCTION"
+
 if [ "$DATABASE" = "postgres" ]
 then
     echo "Waiting for postgres..."
