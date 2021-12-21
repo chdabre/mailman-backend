@@ -64,7 +64,7 @@ def handle_jobs():
     users = CustomUser.objects.all()
     for user in users:
         print("Handle user id %d | %s" % (user.id, user))
-        waiting_jobs = PostcardJob.objects.filter(status=PostcardJob.JobStatus.WAITING).order_by('send_on')
+        waiting_jobs = PostcardJob.objects.filter(user=user, status=PostcardJob.JobStatus.WAITING).order_by('send_on')
 
         if waiting_jobs.count() > 0:
             credentials = user.credentials.first()
