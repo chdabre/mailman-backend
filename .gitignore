@@ -8,3 +8,5 @@ static/
 media/
 web/
 celerybeat-schedule
+staticfiles/
+mediafiles/
