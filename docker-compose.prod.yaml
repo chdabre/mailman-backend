@@ -15,8 +15,6 @@ services:
       - ./.env.prod
     depends_on:
       - db
-    networks:
-      - internal
 
   celery:
     build: ./
@@ -31,8 +29,6 @@ services:
       - web
       - db
       - redis
-    networks:
-      - internal
 
   nginx:
     build: ./docker_nginx/
@@ -43,18 +39,6 @@ services:
       - media_volume:/home/app/web/mediafiles
     depends_on:
       - web
-    labels:
-      - "traefik.http.middlewares.mailman-redirect-secure.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.mailman-redirect-secure.redirectscheme.permanent=true"
-      - "traefik.http.routers.mailman-web.middlewares=mailman-redirect-secure"
-      - "traefik.http.routers.mailman-web.rule=Host(`mailman.imakethings.ch`)"
-      - "traefik.http.routers.mailman-web.entrypoints=web"
-      - "traefik.http.routers.mailman.rule=Host(`mailman.imakethings.ch`)"
-      - "traefik.http.routers.mailman.tls=true"
-      - "traefik.http.routers.mailman.tls.certresolver=letsencrypt"
-    networks:
-      - traefik
-      - internal
 
   db:
     image: postgres:13.0-alpine
@@ -75,9 +59,3 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
-
-networks:
-  internal:
-  traefik:
-    external: true
-    name: proxy
