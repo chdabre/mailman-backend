@@ -44,7 +44,7 @@ services:
   db:
     image: postgres:13.0-alpine
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - /opt/mailman-backend/postgres_data:/var/lib/postgresql/data/
     expose:
       - "5432"
     env_file:
@@ -55,6 +55,5 @@ services:
     image: redis:6-alpine
 
 volumes:
-  postgres_data:
   static_volume:
   media_volume:
