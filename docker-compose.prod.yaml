@@ -49,8 +49,6 @@ services:
     env_file:
       - ./.env.prod
       - ./.env.prod.db
-    networks:
-      - internal
 
   redis:
     image: redis:6-alpine
