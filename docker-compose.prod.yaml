@@ -22,7 +22,6 @@ services:
       dockerfile: Dockerfile.prod
     command: celery --app=config worker --loglevel=info -B
     volumes:
-      - ./:/home/app
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
     env_file:
