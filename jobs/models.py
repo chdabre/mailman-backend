@@ -40,11 +40,6 @@ class Address(models.Model):
             place=self.city,
         )
 
-    class Meta:
-        unique_together = [
-            ['user', 'is_primary']
-        ]
-
 
 class PostcardJob(models.Model):
     class JobStatus(models.TextChoices):
