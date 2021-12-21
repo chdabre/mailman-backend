@@ -39,6 +39,16 @@ services:
       - media_volume:/home/app/web/mediafiles
     depends_on:
       - web
+    network_mode: proxy
+    labels:
+      - "traefik.http.middlewares.mailman-redirect-secure.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.mailman-redirect-secure.redirectscheme.permanent=true"
+      - "traefik.http.routers.mailman-web.middlewares=mailman-redirect-secure"
+      - "traefik.http.routers.mailman-web.rule=Host(`mailman.imakethings.ch`)"
+      - "traefik.http.routers.mailman-web.entrypoints=web"
+      - "traefik.http.routers.mailman.rule=Host(`mailman.imakethings.ch`)"
+      - "traefik.http.routers.mailman.tls=true"
+      - "traefik.http.routers.mailman.tls.certresolver=letsencrypt"
 
   db:
     image: postgres:13.0-alpine
