@@ -24,14 +24,18 @@ def render_preview(job):
         image_export=True
     )
 
-    trace_dir = os.path.join(os.getcwd(), '.postcard_creator_wrapper_sent')
-    file_name = strftime("postcard_creator_export_%Y-%m-%d_%H-%M-%S_text.jpg", gmtime())
-    path = os.path.join(trace_dir, file_name)
+    try:
+        trace_dir = os.path.join(os.getcwd(), '.postcard_creator_wrapper_sent')
+        files = os.listdir(trace_dir)
+        text_image_filename = next(f for f in files if '_text.jpg' in f)
+        path = os.path.join(trace_dir, text_image_filename)
 
-    job.text_image.save(file_name, File(open(path, 'rb')))
+        job.text_image.save(text_image_filename, File(open(path, 'rb')))
+        shutil.rmtree(trace_dir)
+    except:
+        pass
+
     job.save()
-
-    shutil.rmtree(trace_dir)
 
 
 @shared_task
@@ -46,16 +50,20 @@ def send_postcard(job):
         image_export=True
     )
 
-    trace_dir = os.path.join(os.getcwd(), '.postcard_creator_wrapper_sent')
-    file_name = strftime("postcard_creator_export_%Y-%m-%d_%H-%M-%S_text.jpg", gmtime())
-    path = os.path.join(trace_dir, file_name)
+    try:
+        trace_dir = os.path.join(os.getcwd(), '.postcard_creator_wrapper_sent')
+        files = os.listdir(trace_dir)
+        text_image_filename = next(f for f in files if '_text.jpg' in f)
+        path = os.path.join(trace_dir, text_image_filename)
 
-    job.text_image.save(file_name, File(open(path, 'rb')))
+        job.text_image.save(text_image_filename, File(open(path, 'rb')))
+        shutil.rmtree(trace_dir)
+    except:
+        pass
+
     job.status = PostcardJob.JobStatus.SENT
     job.time_sent = timezone.now()
     job.save()
-
-    shutil.rmtree(trace_dir)
 
 
 @shared_task()
@@ -71,7 +79,7 @@ def handle_jobs():
             if credentials:
                 credentials.refresh()
 
-                if credentials.has_free_postcard():
+                if credentials.has_free_postcard() or settings.DEBUG:
                     job = waiting_jobs.filter(send_on=timezone.now()).first()
                     if job:
                         print("Job with send_on date found: %s" % (job))

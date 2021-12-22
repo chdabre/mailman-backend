@@ -1,0 +1,12 @@
+*DS_Store
+*.pyc
+__pycache__
+notes.md
+.idea/
+*.sqlite3
+static/
+media/
+web/
+celerybeat-schedule
+staticfiles/
+mediafiles/
