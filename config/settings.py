@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'rest_auth.registration',
     'drf_yasg',
+    'django_celery_beat',
 
     'api',
     'users',
@@ -113,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Zurich'
 
 USE_I18N = True
 
@@ -157,12 +158,6 @@ CELERY_TIMEZONE = "Europe/Zurich"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
-CELERY_BEAT_SCHEDULE = {
-    "handle_jobs": {
-        "task": "jobs.tasks.handle_jobs",
-        "schedule": crontab(hour="*/1"),
-    },
-}
 
 # Postcard Creator
 PCC_CLIENT_ID = 'ae9b9894f8728ca78800942cda638155'

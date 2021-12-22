@@ -15,7 +15,18 @@ services:
 
   celery:
     build: ./
-    command: celery --app=config worker --loglevel=info -B
+    command: celery --app=config worker --loglevel=info
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - web
+      - redis
+
+  celery-beat:
+    build: ./
+    command: celery --app=config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - ./:/usr/src/app
     env_file:
