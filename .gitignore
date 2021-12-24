@@ -10,3 +10,4 @@ web/
 celerybeat-schedule
 staticfiles/
 mediafiles/
+google-cloud-credentials.json

@@ -6,11 +6,14 @@ from time import strftime, gmtime
 from celery import shared_task
 from django.core.files import File
 from django.utils import timezone
+from firebase_admin._messaging_encoder import Message
+from firebase_admin._messaging_utils import Notification
 from postcard_creator.postcard_creator import PostcardCreator
 
 from config import settings
 from jobs.models import PostcardJob
 from users.models import CustomUser
+from users.tasks import send_push_notification
 
 
 @shared_task
@@ -64,6 +67,15 @@ def send_postcard(job):
     job.status = PostcardJob.JobStatus.SENT
     job.time_sent = timezone.now()
     job.save()
+
+    sent_notification = Message(
+        notification=Notification(
+            title="Postcard sent",
+            body="Your Postcard has been sent successfully!",
+            image=job.front_image.url,
+        )
+    )
+    send_push_notification(job.user, sent_notification)
 
 
 @shared_task()

@@ -4,6 +4,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from celery.schedules import crontab
+from firebase_admin import initialize_app
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'drf_yasg',
     'django_celery_beat',
+    'fcm_django',
 
     'api',
     'users',
@@ -167,4 +169,32 @@ PCC_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; wv) ' +
                   'AppleWebKit/537.36 (KHTML, like Gecko) ' +
                   'Version/4.0 Chrome/52.0.2743.98 Mobile Safari/537.36',
+}
+
+# Firebase
+
+# Optional ONLY IF you have initialized a firebase app already:
+# Visit https://firebase.google.com/docs/admin/setup/#python
+# for more options for the following:
+# Store an environment variable called GOOGLE_APPLICATION_CREDENTIALS
+# which is a path that point to a json file with your credentials.
+# Additional arguments are available: credentials, options, name
+FIREBASE_APP = initialize_app()
+# To learn more, visit the docs here:
+# https://cloud.google.com/docs/authentication/getting-started>
+
+FCM_DJANGO_SETTINGS = {
+     # default: _('FCM Django')
+    "APP_VERBOSE_NAME": "Firebase Cloud Messaging",
+     # true if you want to have only one active device per registered user at a time
+     # default: False
+    "ONE_DEVICE_PER_USER": False,
+     # devices to which notifications cannot be sent,
+     # are deleted upon receiving error response from FCM
+     # default: False
+    "DELETE_INACTIVE_DEVICES": True,
+    # Transform create of an existing Device (based on registration id) into
+                # an update. See the section
+    # "Update of device with duplicate registration ID" for more details.
+    "UPDATE_ON_DUPLICATE_REG_ID": True,
 }
