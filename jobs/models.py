@@ -40,6 +40,12 @@ class Address(models.Model):
             place=self.city,
         )
 
+    def num_used(self):
+        return self.recipient_jobs.count()
+
+    class Meta:
+        ordering = ('-is_primary', 'user')
+
 
 class PostcardJob(models.Model):
     class JobStatus(models.TextChoices):

@@ -1,4 +1,7 @@
+from django.db.models import Count
 from rest_framework import viewsets, mixins
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from jobs.models import PostcardJob, Address
 from jobs.serializers import PostcardJobSerializer, AddressSerializer
@@ -32,7 +35,21 @@ class AddressViewset(
     queryset = Address.objects.all()
 
     def filter_queryset(self, queryset):
-        return queryset.filter(user=self.request.user)
+        return queryset.filter(user=self.request.user)\
+                .annotate(num_used=Count('recipient_jobs'))\
+                .order_by('-is_primary', '-num_used')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @action(detail=True, methods=['post'], serializer_class=None)
+    def set_primary(self, request, *args, **kwargs):
+        address = self.get_object()
+        user = address.user
+        user.addresses.all().update(is_primary=False)
+
+        address.is_primary = True
+        address.save()
+
+        serializer = AddressSerializer(address)
+        return Response(serializer.data)

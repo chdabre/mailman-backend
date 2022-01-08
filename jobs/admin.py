@@ -5,7 +5,7 @@ from jobs.models import PostcardJob, Address
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['__str__', 'user', 'is_primary', 'num_used']
 
 
 @admin.register(PostcardJob)
