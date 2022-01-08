@@ -35,12 +35,16 @@ class AddressViewset(
     queryset = Address.objects.all()
 
     def filter_queryset(self, queryset):
-        return queryset.filter(user=self.request.user)\
+        return queryset.filter(user=self.request.user, display_status=Address.AddressDisplayStatus.ACTIVE)\
                 .annotate(num_used=Count('recipient_jobs'))\
                 .order_by('-is_primary', '-num_used')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def perform_destroy(self, instance):
+        instance.display_status = Address.AddressDisplayStatus.DELETED
+        instance.save()
 
     @action(detail=True, methods=['post'], serializer_class=None)
     def set_primary(self, request, *args, **kwargs):

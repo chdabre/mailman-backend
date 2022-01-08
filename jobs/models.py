@@ -7,6 +7,10 @@ from users.models import CustomUser
 
 
 class Address(models.Model):
+    class AddressDisplayStatus(models.TextChoices):
+        ACTIVE = 'ACTIVE', 'Active'
+        DELETED = 'DELETED', 'Deleted'
+
     firstname = models.CharField(null=False, blank=False, max_length=50)
     lastname = models.CharField(null=False, blank=False, max_length=50)
     street = models.CharField(null=False, blank=False, max_length=50)
@@ -15,6 +19,7 @@ class Address(models.Model):
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=False, blank=False, related_name='addresses')
     is_primary = models.BooleanField(default=False)
+    display_status = models.CharField(choices=AddressDisplayStatus.choices, default=AddressDisplayStatus.ACTIVE, null=False, blank=False, max_length=20)
 
     def __str__(self):
         return "%s | %s" % (self.get_full_name(), self.city)
@@ -44,7 +49,7 @@ class Address(models.Model):
         return self.recipient_jobs.count()
 
     class Meta:
-        ordering = ('-is_primary', 'user')
+        ordering = ('display_status', '-is_primary', 'user')
 
 
 class PostcardJob(models.Model):
