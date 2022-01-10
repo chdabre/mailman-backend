@@ -66,6 +66,7 @@ class PostcardJob(models.Model):
     time_sent = models.DateTimeField(blank=True, null=True)
 
     message = models.CharField(max_length=500, blank=True)
+    rich_message_data = models.CharField(max_length=500, blank=True)
     front_image = models.ImageField(upload_to='raw_image/', blank=True)
     text_image = models.ImageField(upload_to='text_image/', blank=True)
 
@@ -80,7 +81,8 @@ class PostcardJob(models.Model):
             sender=self.sender.to_sender(),
             recipient=self.recipient.to_recipient(),
             message=self.message,
-            picture_stream=self.front_image.file
+            picture_stream=self.front_image.file,
+            text_image_stream=self.text_image.file if self.text_image else None,
         )
 
     def handle(self):

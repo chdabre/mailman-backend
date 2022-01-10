@@ -11,6 +11,7 @@ from jobs.tasks import render_preview
 class PostcardJobViewset(
             mixins.ListModelMixin,
             mixins.CreateModelMixin,
+            mixins.UpdateModelMixin,
             mixins.DestroyModelMixin,
             viewsets.GenericViewSet
         ):
@@ -22,7 +23,9 @@ class PostcardJobViewset(
 
     def perform_create(self, serializer):
         job = serializer.save(user=self.request.user)
-        render_preview(job)
+        print(job.text_image)
+        if not job.text_image:
+            render_preview(job)
 
 
 class AddressViewset(

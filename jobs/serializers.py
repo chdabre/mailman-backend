@@ -44,6 +44,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class PostcardJobSerializer(serializers.ModelSerializer):
     front_image = Base64ImageField(max_length=None, use_url=True)
+    text_image = Base64ImageField(max_length=None, use_url=True)
     is_landscape = serializers.SerializerMethodField()
 
     sender = AddressSerializer(read_only=True)
@@ -76,6 +77,7 @@ class PostcardJobSerializer(serializers.ModelSerializer):
             'front_image',
             'text_image',
             'message',
+            'rich_message_data',
             'sender_id',
             'recipient_id',
             'is_landscape',
@@ -86,5 +88,4 @@ class PostcardJobSerializer(serializers.ModelSerializer):
 
         extra_kwargs = {
             'time_sent': {'read_only': True},
-            'text_image': {'read_only': True},
         }
