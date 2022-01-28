@@ -49,7 +49,7 @@ class AddressViewset(
         instance.display_status = Address.AddressDisplayStatus.DELETED
         instance.save()
 
-    @action(detail=True, methods=['post'], serializer_class=None)
+    @action(detail=True, methods=['post'])
     def set_primary(self, request, *args, **kwargs):
         address = self.get_object()
         user = address.user

@@ -2,10 +2,13 @@ import os
 from pathlib import Path
 # import datetime
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 from celery.schedules import crontab
 from firebase_admin import initialize_app
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -78,7 +81,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -111,7 +113,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -124,7 +125,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
@@ -161,7 +161,6 @@ CELERY_TIMEZONE = "Europe/Zurich"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
-
 # Postcard Creator
 PCC_CLIENT_ID = 'ae9b9894f8728ca78800942cda638155'
 PCC_CLIENT_SECRET = '89ff451ede545c3f408d792e8caaddf0'
@@ -185,17 +184,33 @@ FIREBASE_APP = initialize_app()
 # https://cloud.google.com/docs/authentication/getting-started>
 
 FCM_DJANGO_SETTINGS = {
-     # default: _('FCM Django')
+    # default: _('FCM Django')
     "APP_VERBOSE_NAME": "Firebase Cloud Messaging",
-     # true if you want to have only one active device per registered user at a time
-     # default: False
+    # true if you want to have only one active device per registered user at a time
+    # default: False
     "ONE_DEVICE_PER_USER": False,
-     # devices to which notifications cannot be sent,
-     # are deleted upon receiving error response from FCM
-     # default: False
+    # devices to which notifications cannot be sent,
+    # are deleted upon receiving error response from FCM
+    # default: False
     "DELETE_INACTIVE_DEVICES": True,
     # Transform create of an existing Device (based on registration id) into
-                # an update. See the section
+    # an update. See the section
     # "Update of device with duplicate registration ID" for more details.
     "UPDATE_ON_DUPLICATE_REG_ID": True,
 }
+
+# Sentry
+sentry_sdk.init(
+    dsn="https://438e404c0c0442a190fbed5855406c51@o1108176.ingest.sentry.io/6172484",
+    integrations=[DjangoIntegration()],
+    environment='development' if DEBUG else 'production',
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
